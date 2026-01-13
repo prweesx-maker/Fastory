@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fastory</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #fff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #d40000 0%, #8b0000 50%, #000 100%);
+            padding: 60px 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(212, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        header h1 {
+            font-size: 3em;
+            font-weight: 700;
+            text-shadow: 3px 3px 10px rgba(0,0,0,0.8);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 40px;
+            background: rgba(28, 28, 28, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(255, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(212, 0, 0, 0.1), rgba(0, 0, 0, 0.3));
+            border-radius: 15px;
+            border-left: 5px solid #d40000;
+        }
+
+        .intro p {
+            font-size: 1.1em;
+            color: #ddd;
+        }
+
+        .car-card {
+            margin-bottom: 35px;
+            padding: 30px;
+            background: linear-gradient(135deg, #252525 0%, #1a1a1a 100%);
+            border-radius: 15px;
+            border-left: 5px solid #d40000;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .car-content {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .car-image {
+            flex: 0 0 300px;
+            width: 300px;
+            height: 200px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+        }
+
+        .car-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .car-card:hover .car-image img {
+            transform: scale(1.1);
+        }
+
+        .car-text {
+            flex: 1;
+        }
+
+        .car-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 0, 0, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .car-card:hover::before {
+            left: 100%;
+        }
+
+        .car-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 8px 30px rgba(212, 0, 0, 0.4);
+            border-left-width: 8px;
+        }
+
+        .car-card h2 {
+            color: #ff3c3c;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .car-card h2::before {
+            content: '🏁';
+            font-size: 0.9em;
+        }
+
+        .car-card p {
+            color: #ccc;
+            font-size: 1.05em;
+            line-height: 1.8;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .car-card strong {
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, rgba(212, 0, 0, 0.2), rgba(139, 0, 0, 0.1));
+            padding: 12px 18px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid rgba(212, 0, 0, 0.3);
+        }
+
+        .read-more {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #d40000, #8b0000);
+            color: #fff;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .read-more:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 0, 0, 0.5);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #252525 0%, #1a1a1a 100%);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 50px rgba(212, 0, 0, 0.5);
+            border: 2px solid #d40000;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 2.5em;
+            color: #ff3c3c;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: #ff6b6b;
+            transform: rotate(90deg);
+        }
+
+        .modal-content h2 {
+            color: #ff3c3c;
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #d40000;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 300px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .detail-section {
+            margin-bottom: 25px;
+        }
+
+        .detail-section h3 {
+            color: #ff6b6b;
+            font-size: 1.5em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-section p, .detail-section ul {
+            color: #ccc;
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .detail-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .detail-section ul li {
+            padding: 8px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .detail-section ul li::before {
+            content: '▸';
+            color: #d40000;
+            position: absolute;
+            left: 0;
+            font-size: 1.2em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: rgba(212, 0, 0, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(212, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .stat-box strong {
+            color: #ff3c3c;
+            display: block;
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+
+        footer {
+            background: #000;
+            text-align: center;
+            padding: 25px;
+            font-size: 0.95em;
+            color: #888;
+            margin-top: 50px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        footer p {
+            margin: 5px 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            header p {
+                font-size: 1em;
+            }
+
+            .container {
+                padding: 25px;
+                margin: 30px auto;
+            }
+
+            .car-card {
+                padding: 20px;
+            }
+
+            .car-content {
+                flex-direction: column;
+            }
+
+            .car-image {
+                flex: 1 1 auto;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .car-card h2 {
+                font-size: 1.5em;
+            }
+
+            .car-card:hover {
+                transform: translateX(5px);
+            }
+
+            .modal-content {
+                padding: 30px 20px;
+                width: 95%;
+            }
+
+            .modal-content h2 {
+                font-size: 1.8em;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 40px 15px;
+            }
+
+            header h1 {
+                font-size: 1.6em;
+            }
+
+            .container {
+                width: 95%;
+                padding: 20px;
+            }
+
+            .car-card h2 {
+                font-size: 1.3em;
+            }
+
+            .car-card p {
+                font-size: 0.95em;
+            }
+
+            .close-btn {
+                font-size: 2em;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .car-card {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .car-card:nth-child(1) { animation-delay: 0.1s; }
+        .car-card:nth-child(2) { animation-delay: 0.2s; }
+        .car-card:nth-child(3) { animation-delay: 0.3s; }
+        .car-card:nth-child(4) { animation-delay: 0.4s; }
+        .car-card:nth-child(5) { animation-delay: 0.5s; }
+        .car-card:nth-child(6) { animation-delay: 0.6s; }
+
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #d40000, #8b0000);
+            color: #fff;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 0, 0, 0.4);
+            z-index: 1000;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(212, 0, 0, 0.6);
+        }
+
+        /* Custom Scrollbar */
+        .modal-content::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: #d40000;
+            border-radius: 5px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: #ff3c3c;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>รถแข่งในสนาม</h1>
+    <p>รวมประเภทรถแข่งยอดนิยม (ยกเว้น MotoGP)</p>
+</header>
+
+<div class="container">
+    <div class="intro">
+        <p>ค้นพบโลกแห่งความเร็วกับรถแข่งประเภทต่างๆ ที่น่าตื่นเต้นที่สุด พร้อมเทคโนโลยีล้ำสมัยและประสิทธิภาพสูงสุด<br><strong>คลิกที่การ์ดเพื่ออ่านข้อมูลเพิ่มเติม</strong></p>
+    </div>
+
+    <div class="car-card" onclick="openModal('f1')">
+        <div class="car-content">
+            <div class="car-image">
+                <img src="lando-norris-mclaren.jpg" alt="Formula 1" loading="lazy">
+            </div>
+            <div class="car-text">
+                <h2>1. Formula 1 (F1)</h2>
+                <p>
+                    รถแข่งล้อเปิดที่เร็วที่สุดในโลก ใช้เทคโนโลยีขั้นสูงมาก  
+                    ความเร็วสูงสุดมากกว่า 350 กม./ชม.  
+                    แข่งขันในรายการ Formula 1 World Championship
+                </p>
+                <div class="highlight">
+                    <p><strong>จุดเด่น:</strong> เร็วที่สุด เทคโนโลยีล้ำสมัย กีฬามอเตอร์สปอร์ตระดับสูงสุด</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="car-card" onclick="openModal('f2')">
+        <div class="car-content">
+            <div class="car-image">
+                <img src="campos-racing-con-motivacion-para-arrancar-la-temporada-de-fia-f2-con-resultados-destacados-1677827653205.jpg" alt="Formula 2" loading="lazy">
+            </div>
+            <div class="car-text">
+                <h2>2. Formula 2 (F2)</h2>
+                <p>
+                    รถแข่งระดับรองจาก F1 ใช้รถสเปกเดียวกันทุกทีม  
+                    เน้นความสามารถของนักแข่งเป็นหลัก  
+                    เป็นเวทีปั้นนักแข่งเข้าสู่ Formula 1
+                </p>
+                <div class="highlight">
+                    <p><strong>จุดเด่น:</strong> แข่งขันสูสี ดูสนุก บันไดสู่ความฝัน F1</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="car-card" onclick="openModal('gt')">
+        <div class="car-content">
+            <div class="car-image">
+                <img src="timthumb.jpg" alt="GT Racing" loading="lazy">
+            </div>
+            <div class="car-text">
+                <h2>3. GT Racing (GT3 / GT4)</h2>
+                <p>
+                    รถแข่งที่พัฒนาจากรถสปอร์ตจริง เช่น Ferrari, Porsche, Lamborghini  
+                    ใช้แข่งในรายการระดับโลกหลายสนาม เช่น GT World Challenge
+                </p>
+                <div class="highlight">
+                    <p><strong>จุดเด่น:</strong> หน้าตาสวย ใกล้เคียงรถถนน แบรนด์ดังเต็มสนาม</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="car-card" onclick="openModal('touring')">
+        <div class="car-content">
+            <div class="car-image">
+                <img src="720x720-group-teaser-m6.jpeg" alt="Touring Car" loading="lazy">
+            </div>
+            <div class="car-text">
+                <h2>4. Touring Car</h2>
+                <p>
+                    รถเก๋งที่ดัดแปลงเพื่อการแข่งขัน  
+                    เช่น Honda Civic, Toyota Corolla, BMW  
+                    แข่งกันใกล้ชิด มีการปะทะบ่อย ความตื่นเต้นทุกตลอดเวลา
+                </p>
+                <div class="highlight">
+                    <p><strong>จุดเด่น:</strong> เร้าใจ ดูง่าย สนุกทุกโค้ง ใกล้ตัวคนทั่วไป</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="car-card" onclick="openModal('lemans')">
+        <div class="car-content">
+            <div class="car-image">
+                <img src="fit.jpg" alt="Le Mans Prototype" loading="lazy">
+            </div>
+            <div class="car-text">
+                <h2>5. Le Mans Prototype / Hypercar</h2>
+                <p>
+                    รถต้นแบบที่สร้างขึ้นเพื่อการแข่งขันโดยเฉพาะ  
+                    ใช้แข่งรายการ Endurance เช่น 24 ชั่วโมง Le Mans  
+                    เน้นความเร็ว ความทนทาน และประสิทธิภาพสูงสุด
+                </p>
+                <div class="highlight">
+                    <p><strong>จุดเด่น:</strong> แข่งยาว เทคโนโลยีอนาคต ทดสอบขีดจำกัดรถและนักแข่ง</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+<div id="modal-f1" class="modal" onclick="closeModal('f1', event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="close-btn" onclick="closeModal('f1')">&times;</span>
+        <h2>🏁 Formula 1 (F1)</h2>
+        
+        <div class="modal-image">
+            <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=1200&q=80" alt="Formula 1">
+        </div>
+
+        <div class="detail-section">
+            <h3>📋 ข้อมูลทั่วไป</h3>
+            <p>Formula 1 หรือ F1 คือการแข่งรถที่มีชื่อเสียงและมีเทคโนโลジีที่ทันสมัยที่สุดในโลก เป็นรถแข่งล้อเปิด (Open-wheel) ที่มีความเร็วสูงสุดและใช้เทคโนโลยีอากาศพลศาสตร์ขั้นสูง รวมถึงระบบไฮบริดที่ประหยัดพลังงาน</p>
+        </div>
+
+        <div class="detail-section">
+            <h3>⚡ ข้อมูลทางเทคนิค</h3>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <strong>350+ กม./ชม.</strong>
+                    <span>ความเร็วสูงสุด</span>
+                </div>
+                <div class="stat-box">
+                    <strong>1.6L V6</strong>
+                    <span>เครื่องยนต์เทอร์โบไฮบริด</span>
+                </div>
+                <div class="stat-box">
+                    <strong>1000+ แรงม้า</strong>
+                    <span>กำลังรวม (ERS+ICE)</span>
+                </div>
+                <div class="stat-box">
+                    <strong>798 กก.</strong>
+                    <span>น้ำหนักขั้นต่ำ</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <h3>🏆 จุดเด่นและคุณสมบัติ</h3>
+            <ul>
+                <li>ใช้เทคโนโลยี DRS (Drag Reduction System) เพื่อเพิ่มความเร็ว</li>
+                <li>ระบบเบรกคาร์บอนเซรามิกที่ทนความร้อนได้สูง</li>
+                <li>ระบบกู้คืนพลังงาน (ERS) ที่ช่วยเพิ่มประสิทธิภาพ</li>
+                <li>ยางแข่งพิเศษจาก Pirelli ที่ออกแบบมาโดยเฉพาะ</li>
+                <li>งบประมาณทีมสูงถึงหลายพันล้านบาทต่อฤดูกาล</li>
+            </ul>
+        </div>
+
+        <div class="detail-section">
+            <h3>🌍 รายการแข่งขัน</h3>
+            <p>แข่งขันในรายการ Formula 1 World Championship ที่จัดขึ้นประมาณ 23 สนามทั่วโลก ตั้งแต่เดือนมีนาคมถึงธันวาคม ในประเทศต่างๆ เช่น โมนาโก, อิตาลี, อังกฤษ, ญี่ปุ่น, สิงคโปร์ และอีกมากมาย</p>
+        </div>
+
+        <div class="detail-section">
+            <h3>👥 ทีมและนักแข่งชื่อดัง</h3>
+            <p>ทีมชั้นนำ: Mercedes, Red Bull Racing, Ferrari, McLaren, Aston Martin<br>
+            นักแข่งในตำนาน: Lewis Hamilton, Max Verstappen, Michael Schumacher, Ayrton Senna</p>
+        </div>
+    </div>
+</div>
+
+<div id="modal-f2" class="modal" onclick="closeModal('f2', event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="close-btn" onclick="closeModal('f2')">&times;</span>
+        <h2>🏁 Formula 2 (F2)</h2>
+        
+        <div class="modal-image">
+            <img src="https://images.unsplash.com/photo-1595475207225-428b62bda831?w=1200&q=80" alt="Formula 2">
+        </div>
+
+        <div class="detail-section">
+            <h3>📋 ข้อมูลทั่วไป</h3>
+            <p>Formula 2 เป็นรายการแข่งรถระดับรองจาก F1 ที่ใช้รถสเปกเดียวกันทั้งหมด (Spec Series) เพื่อให้เห็นความสามารถที่แท้จริงของนักแข่ง เป็นบันไดสำคัญสู่ Formula 1</p>
+        </div>
+
+        <div class="detail-section">
+            <h3>⚡ ข้อมูลทางเทคนิค</h3>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <strong>335 กม./ชม.</strong>
+                    <span>ความเร็วสูงสุด</span>
+                </div>
+                <div class="stat-box">
+                    <strong>3.4L V6</strong>
+                    <span>เครื่องยนต์เทอร์โบ</span>
+                </div>
+                <div class="stat-box">
+                    <strong>620 แรงม้า</strong>
+                    <span>กำลังสูงสุด</span>
+                </div>
+                <div class="stat-box">
+                    <strong>755 กก.</strong>
+                    <span>น้ำหนักรวม</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <h3>🏆 จุดเด่นและคุณสมบัติ</h3>
+            <ul>
+                <li>รถทุกคันเหมือนกันหมด ความสามารถนักแข่งตัดสิน</li>
+                <li>งบประมาณต่ำกว่า F1 มาก เข้าถึงได้ง่ายกว่า</li>
+                <li>การแข่งขันดุเดือดและสนุกสนาน</li>
+                <li>
